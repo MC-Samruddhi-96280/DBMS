@@ -1,0 +1,244 @@
+C:\Users\jadha>mysql -u root -pmanager
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| classwork_db       |
+| information_schema |
+| mysql              |
+| new_hr_db          |
+| performance_schema |
+| sales_db           |
+| spj                |
+| sys                |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> USE spj;
+
+mysql> USE spj;
+Database changed
+mysql> SHOW TABLES;
++---------------+
+| Tables_in_spj |
++---------------+
+| j             |
+| p             |
+| s             |
+| sp            |
++---------------+
+4 rows in set (0.00 sec)
+
+
+
+mysql> SELECT * FROM p;
++-----+-------+-------+--------+--------+
+| pid | Pname | color | weight | city   |
++-----+-------+-------+--------+--------+
+| p1  | Nut   | Red   |     12 | London |
+| p2  | Bolt  | Green |     17 | Paris  |
+| p3  | Screw | Blue  |     17 | Rome   |
+| p4  | Screw | Red   |     14 | London |
+| p5  | Cam   | Blue  |     12 | Paris  |
+| P6  | Cog   | Red   |     19 | London |
++-----+-------+-------+--------+--------+
+6 rows in set (0.00 sec)
+
+/*
+1. Display the PNAME and COLOR from the P table for the 
+CITY=”London”.
+*/
+
+SELECT Pname,color 
+FROM p 
+WHERE CITY='London';
+
+mysql> SELECT Pname,color
+    -> FROM p
+    -> WHERE CITY='London';
++-------+-------+
+| Pname | color |
++-------+-------+
+| Nut   | Red   |
+| Screw | Red   |
+| Cog   | Red   |
++-------+-------+
+3 rows in set (0.00 sec)
+
+/*
+2. Display all the Suppliers from London.
+
+*/
+
+mysql> SELECT * FROM s;
++-----+-------+--------+--------+
+| Sid | Sname | status | city   |
++-----+-------+--------+--------+
+| s1  | Smith |     20 | London |
+| s2  | Jones |     10 | Paris  |
+| s3  | Blake |     30 | Paris  |
+| s4  | Clark |     20 | London |
+| s5  | Adams |     30 | Athens |
++-----+-------+--------+--------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT * FROM s WHERE city='London';
++-----+-------+--------+--------+
+| Sid | Sname | status | city   |
++-----+-------+--------+--------+
+| s1  | Smith |     20 | London |
+| s4  | Clark |     20 | London |
++-----+-------+--------+--------+
+2 rows in set (0.00 sec)
+
+/*
+3. Display all the Suppliers from Paris or Athens.
+*/
+
+mysql> SELECT *
+    -> FROM s
+    -> WHERE city='Paris' OR city='Athens';
++-----+-------+--------+--------+
+| Sid | Sname | status | city   |
++-----+-------+--------+--------+
+| s2  | Jones |     10 | Paris  |
+| s3  | Blake |     30 | Paris  |
+| s5  | Adams |     30 | Athens |
++-----+-------+--------+--------+
+3 rows in set (0.00 sec)
+
+/*4. Display all the Jobs in Athens. */
+mysql> SELECT *
+    -> FROM j;
++-----+----------+--------+
+| jid | Jname    | City   |
++-----+----------+--------+
+| J1  | Sorter   | Paris  |
+| J2  | Punch    | Rome   |
+| J3  | Reader   | Athens |
+| J4  | Console  | Athens |
+| J5  | Collator | London |
+| J6  | Terminal | Oslo   |
+| J7  | Tape     | London |
++-----+----------+--------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT * FROM j
+    -> WHERE city='Athens';
++-----+---------+--------+
+| jid | Jname   | City   |
++-----+---------+--------+
+| J3  | Reader  | Athens |
+| J4  | Console | Athens |
++-----+---------+--------+
+2 rows in set (0.00 sec)
+
+/*5. Display all the Part names with the weight between 12 and 14 
+(inclusive of both).
+ */
+
+
+mysql>  SElECT Pname
+    ->  FROM p
+    ->  WHERE weight BETWEEN 12 AND 14;
++-------+
+| Pname |
++-------+
+| Nut   |
+| Screw |
+| Cam   |
++-------+
+3 rows in set (0.00 sec)
+
+/*
+
+6. Display all the Suppliers with a Status greater than or equal
+to 20.
+
+ */
+
+ mysql> SELECT * FROM s
+    ->  WHERE status >=20;
++-----+-------+--------+--------+
+| Sid | Sname | status | city   |
++-----+-------+--------+--------+
+| s1  | Smith |     20 | London |
+| s3  | Blake |     30 | Paris  |
+| s4  | Clark |     20 | London |
+| s5  | Adams |     30 | Athens |
++-----+-------+--------+--------+
+4 rows in set (0.00 sec)
+
+/*
+ 7. Display all the Suppliers except the Suppliers from London.
+ */
+
+mysql>  SELECT * FROM s
+    ->  WHERE city != 'London';
++-----+-------+--------+--------+
+| Sid | Sname | status | city   |
++-----+-------+--------+--------+
+| s2  | Jones |     10 | Paris  |
+| s3  | Blake |     30 | Paris  |
+| s5  | Adams |     30 | Athens |
++-----+-------+--------+--------+
+3 rows in set (0.00 sec)
+
+/*8. Display only the Cities from where the Suppliers come from
+ */
+ 
+
+
+ /*9. Display the Supplier table in the descending order of CITY.
+ */
+mysql>  SELECT * FROM s
+    ->  ORDER BY  city DESC;
++-----+-------+--------+--------+
+| Sid | Sname | status | city   |
++-----+-------+--------+--------+
+| s2  | Jones |     10 | Paris  |
+| s3  | Blake |     30 | Paris  |
+| s1  | Smith |     20 | London |
+| s4  | Clark |     20 | London |
+| s5  | Adams |     30 | Athens |
++-----+-------+--------+--------+
+5 rows in set (0.10 sec)
+
+
+/*
+10. Display the Part Table in the ascending order of CITY and 
+within the city in the ascending order of Part names.
+*/
+
+
+/*
+11. Display all the Suppliers with a status between 10 and 20
+*/
+
+mysql> SELECT * FROM s
+    -> WHERE status BETWEEN 10 AND 20;
++-----+-------+--------+--------+
+| Sid | Sname | status | city   |
++-----+-------+--------+--------+
+| s1  | Smith |     20 | London |
+| s2  | Jones |     10 | Paris  |
+| s4  | Clark |     20 | London |
++-----+-------+--------+--------+
+3 rows in set (0.00 sec)
+
+/*
+12. Display all the Parts and their Weight, which are not in the 
+range of 10 and 15.
+*/
+mysql> SELECT  pname,weight
+    -> FROM p
+    -> WHERE weight NOT BETWEEN 10 AND 15;
++-------+--------+
+| pname | weight |
++-------+--------+
+| Bolt  |     17 |
+| Screw |     17 |
+| Cog   |     19 |
++-------+--------+
+3 rows in set (0.00 sec)

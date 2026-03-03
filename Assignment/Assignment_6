@@ -1,0 +1,430 @@
+
+
+/*
+1. Write a query that counts the number of salespeople registering orders
+for each day. (If a salesperson has more than one order on a given day, 
+he or she should be counted only once.).
+
+*/
+mysql> SELECT odate,COUNT(distinct snum)
+    -> FROM orders
+    -> GROUP BY odate
+    -> HAVING COUNT(snum) > 1;
++------------+----------------------+
+| odate      | COUNT(distinct snum) |
++------------+----------------------+
+| 1990-10-03 |                    4 |
+| 1990-10-04 |                    3 |
++------------+----------------------+
+2 rows in set (0.03 sec)
+
+/*
+2. Write a query on the Customers table that will find the highest rating in 
+each city. Put the output in this form:
+For the city (city), the highest rating is: (rating).
+*/
+
+mysql> SELECT CONCAT('for the city ', city,' the highest rating is :', MAX(rating) )
+    -> FROM customers
+    -> GROUP BY city;
++------------------------------------------------------------------------+
+| CONCAT('for the city ', city,' the highest rating is :', MAX(rating) ) |
++------------------------------------------------------------------------+
+| for the city London the highest rating is :100                         |
+| for the city Rome the highest rating is :200                           |
+| for the city San Jose the highest rating is :300                       |
+| for the city Berlin the highest rating is :300                         |
++------------------------------------------------------------------------+
+4 rows in set (0.00 sec)
+
+/*
+3 Write an SQL query to calculate the total order amount for each day and 
+display the results in descending order of total orders.
+*/
+
+mysql> SELECT odate,SUM(amt)
+    -> FROM orders
+    -> GROUP BY odate
+    -> ORDER BY sum(odate) DESC;
++------------+----------+
+| odate      | SUM(amt) |
++------------+----------+
+| 1990-10-04 | 16713.81 |
+| 1990-10-03 |  8944.59 |
++------------+----------+
+2 rows in set (0.00 sec)
+
+/*
+4. Write a query that selects the total amount in orders for each
+salesperson for whom this total is greater than the average amount of the 
+order in the table.
+(Note Use the average amount value directly →2565.84)
+*/
+mysql> SELECT snum,SUM(amt) as total
+    -> FROM orders
+    -> GROUP BY snum
+    -> HAVING total >2565.84;
++------+----------+
+| snum | total    |
++------+----------+
+| 1001 | 15382.07 |
+| 1002 |  5546.15 |
++------+----------+
+2 rows in set (0.00 sec)
+
+/*
+5. Write a query that selects the highest rating in each city.
+*/
+
+mysql> SELECT city,max(rating)
+    -> FROM customers
+    -> GROUP BY city;
++----------+-------------+
+| city     | max(rating) |
++----------+-------------+
+| London   |         100 |
+| Rome     |         200 |
+| San Jose |         300 |
+| Berlin   |         300 |
++----------+-------------+
+4 rows in set (0.00 sec)
+
+/*
+6. Retrieve the maximum order amount for each salesperson from the 
+orders table, including only those orders whose value exceeds Rs. 3000.
+
+*/
+mysql> SELECT snum,max(amt)
+    -> FROM orders
+    -> GROUP BY snum
+    -> HAVING max(amt) >3000;
++------+----------+
+| snum | max(amt) |
++------+----------+
+| 1001 |  9891.88 |
+| 1002 |  5160.45 |
++------+----------+
+2 rows in set (0.00 sec)
+
+/*
+7. Write an SQL query to find the smallest order placed by every customer.
+*/
+
+mysql> SELECT cnum,min(amt)
+    -> FROM orders
+    -> GROUP BY cnum
+    -> ORDER BY cnum;
++------+----------+
+| cnum | min(amt) |
++------+----------+
+| 2001 |   767.19 |
+| 2002 |  1713.23 |
+| 2003 |  5160.45 |
+| 2004 |    75.75 |
+| 2006 |  4723.00 |
+| 2007 |  1900.10 |
+| 2008 |    18.69 |
++------+----------+
+7 rows in set (0.00 sec)
+
+
+-------------------------------------------------------------------------------------------------------------------
+/*
+
+
+Note: To solve below queries. use “hr” database
+1. Display manager ID and number of employees managed by the manager.
+*/
+
+
+mysql> SELECT MANAGER_ID,COUNT(EMPLOYEE_ID)
+    -> FROM employees
+    -> GROUP BY MANAGER_ID;
++------------+--------------------+
+| MANAGER_ID | COUNT(EMPLOYEE_ID) |
++------------+--------------------+
+|       NULL |                  1 |
+|        100 |                 14 |
+|        101 |                  5 |
+|        102 |                  1 |
+|        103 |                  4 |
+|        108 |                  5 |
+|        114 |                  5 |
+|        120 |                  8 |
+|        121 |                  8 |
+|        122 |                  8 |
+|        123 |                  8 |
+|        124 |                  8 |
+|        145 |                  6 |
+|        146 |                  6 |
+|        147 |                  6 |
+|        148 |                  6 |
+|        149 |                  6 |
+|        201 |                  1 |
+|        205 |                  1 |
++------------+--------------------+
+19 rows in set (0.00 sec)
+
+/*
+
+2. Display the country ID and number of cities we have in the country
+
+*/
+
+mysql> SELECT COUNTRY_ID,COUNT(CITY)
+    -> FROM locations
+    -> GROUP BY COUNTRY_ID;
++------------+-------------+
+| COUNTRY_ID | COUNT(CITY) |
++------------+-------------+
+| AU         |           1 |
+| BR         |           1 |
+| CA         |           2 |
+| CH         |           2 |
+| CN         |           1 |
+| DE         |           1 |
+| GB         |           3 |
+| IN         |           1 |
+| IT         |           2 |
+| JP         |           2 |
+| MX         |           1 |
+| NL         |           1 |
+| SG         |           1 |
+| US         |           4 |
++------------+-------------+
+14 rows in set (0.00 sec)
+
+
+
+/*
+3. Display average salary of employees in each department who have
+commission percentage.
+*/
+
+mysql> SELECT DEPARTMENT_ID,avg(salary)
+    -> FROM employees
+    -> WHERE COMMISSION_PCT IS NOT NULL
+    -> GROUP BY DEPARTMENT_ID;
++---------------+-------------+
+| DEPARTMENT_ID | avg(salary) |
++---------------+-------------+
+|          NULL | 7000.000000 |
+|            80 | 8955.882353 |
++---------------+-------------+
+2 rows in set (0.00 sec)
+
+/*
+4. Display job ID, number of employees, sum of salary, and difference
+between highest salary and lowest salary of the employees for each job
+*/
+
+mysql> SELECT job_id,COUNT(EMPLOYEE_ID),SUM(salary),MAX(salary)-MIN(salary) AS difference
+    -> FROM employees
+    -> GROUP BY job_id;
++------------+--------------------+-------------+------------+
+| job_id     | COUNT(EMPLOYEE_ID) | SUM(salary) | difference |
++------------+--------------------+-------------+------------+
+| AC_ACCOUNT |                  1 |     8300.00 |       0.00 |
+| AC_MGR     |                  1 |    12008.00 |       0.00 |
+| AD_ASST    |                  1 |     4400.00 |       0.00 |
+| AD_PRES    |                  1 |    24000.00 |       0.00 |
+| AD_VP      |                  2 |    34000.00 |       0.00 |
+| FI_ACCOUNT |                  5 |    39600.00 |    2100.00 |
+| FI_MGR     |                  1 |    12008.00 |       0.00 |
+| HR_REP     |                  1 |     6500.00 |       0.00 |
+| IT_PROG    |                  5 |    28800.00 |    4800.00 |
+| MK_MAN     |                  1 |    13000.00 |       0.00 |
+| MK_REP     |                  1 |     6000.00 |       0.00 |
+| PR_REP     |                  1 |    10000.00 |       0.00 |
+| PU_CLERK   |                  5 |    13900.00 |     600.00 |
+| PU_MAN     |                  1 |    11000.00 |       0.00 |
+| SA_MAN     |                  5 |    61000.00 |    3500.00 |
+| SA_REP     |                 30 |   250500.00 |    5400.00 |
+| SH_CLERK   |                 20 |    64300.00 |    1700.00 |
+| ST_CLERK   |                 20 |    55700.00 |    1500.00 |
+| ST_MAN     |                  5 |    36400.00 |    2400.00 |
++------------+--------------------+-------------+------------+
+19 rows in set (0.00 sec)
+
+/*
+5. Display job ID for jobs with average salary more than 10000.
+*/
+mysql> SELECT job_id,AVG(salary)
+    -> FROM employees
+    -> GROUP BY job_id
+    -> HAVING AVG(salary) > 10000;
++---------+--------------+
+| job_id  | AVG(salary)  |
++---------+--------------+
+| AC_MGR  | 12008.000000 |
+| AD_PRES | 24000.000000 |
+| AD_VP   | 17000.000000 |
+| FI_MGR  | 12008.000000 |
+| MK_MAN  | 13000.000000 |
+| PU_MAN  | 11000.000000 |
+| SA_MAN  | 12200.000000 |
++---------+--------------+
+7 rows in set (0.00 sec)
+
+
+/*
+6. Display the years in which more than 10 employees joined
+*/
+
+mysql> SELECT year(HIRE_DATE),COUNT(EMPLOYEE_ID)
+    -> FROM employees
+    -> GROUP BY year(HIRE_DATE)
+    -> HAVING COUNT(EMPLOYEE_ID) >10;
++-----------------+--------------------+
+| year(HIRE_DATE) | COUNT(EMPLOYEE_ID) |
++-----------------+--------------------+
+|            2015 |                 29 |
+|            2016 |                 24 |
+|            2017 |                 19 |
+|            2018 |                 11 |
++-----------------+--------------------+
+4 rows in set (0.00 sec)
+
+
+/*
+7. Display departments in which more than five employees have
+commission percentage.
+*/
+
+mysql> SELECT DEPARTMENT_ID,count(EMPLOYEE_ID)
+    -> FROM employees
+    -> WHERE COMMISSION_PCT IS NOT NULL
+    -> GROUP BY DEPARTMENT_ID
+    -> HAVING  count(EMPLOYEE_ID) >5 ;
++---------------+--------------------+
+| DEPARTMENT_ID | count(EMPLOYEE_ID) |
++---------------+--------------------+
+|            80 |                 34 |
++---------------+--------------------+
+1 row in set (0.00 sec)
+
+/*
+8. Display employee ID for the employees who did more than one job in the
+past.
+*/
+
+SELECT EMPLOYEE_ID,COUNT(job_id)
+FROM employees
+GROUP BY EMPLOYEE_ID
+HAVING count(job_id) < 1;
+
+mysql> SELECT EMPLOYEE_ID, COUNT(job_id) AS job_count
+    -> FROM employees
+    -> GROUP BY EMPLOYEE_ID
+    -> HAVING COUNT(job_id) > 1;
+Empty set (0.00 sec)
+
+/*
+9. Display job ID of jobs that were done by 2 or more employees for more 
+than 100 days individually.
+*/
+
+mysql> SELECT job_id,count(EMPLOYEE_ID)
+    -> FROM job_history
+    -> WHERE (end_date-start_date) >100
+    -> GROUP BY job_id
+    -> HAVING  count(employee_id) >=2;
++------------+--------------------+
+| job_id     | count(EMPLOYEE_ID) |
++------------+--------------------+
+| AC_ACCOUNT |                  2 |
+| ST_CLERK   |                  2 |
++------------+--------------------+
+2 rows in set (0.00 sec)
+
+/*
+10.Display the department ID, year of hiring, and the number of employees 
+who joined each department in each year
+*/
+
+mysql> SELECT DEPARTMENT_ID,YEAR(HIRE_DATE),COUNT(EMPLOYEE_ID)
+    -> FROM employees
+    -> GROUP  by DEPARTMENT_ID,YEAR(HIRE_DATE);
++---------------+-----------------+--------------------+
+| DEPARTMENT_ID | YEAR(HIRE_DATE) | COUNT(EMPLOYEE_ID) |
++---------------+-----------------+--------------------+
+|            90 |            2013 |                  1 |
+|            90 |            2015 |                  1 |
+|            90 |            2011 |                  1 |
+|            60 |            2016 |                  2 |
+|            60 |            2017 |                  2 |
+|            60 |            2015 |                  1 |
+|           100 |            2012 |                  2 |
+|           100 |            2015 |                  2 |
+|           100 |            2016 |                  1 |
+|           100 |            2017 |                  1 |
+|            30 |            2012 |                  1 |
+|            30 |            2013 |                  1 |
+|            30 |            2015 |                  2 |
+|            30 |            2016 |                  1 |
+|            30 |            2017 |                  1 |
+|            50 |            2014 |                  4 |
+|            50 |            2015 |                 12 |
+|            50 |            2013 |                  3 |
+|            50 |            2017 |                  9 |
+|            50 |            2016 |                 13 |
+|            50 |            2018 |                  4 |
+|            80 |            2014 |                  5 |
+|            80 |            2015 |                 10 |
+|            80 |            2017 |                  5 |
+|            80 |            2018 |                  7 |
+|            80 |            2016 |                  7 |
+|          NULL |            2017 |                  1 |
+|            10 |            2013 |                  1 |
+|            20 |            2014 |                  1 |
+|            20 |            2015 |                  1 |
+|            40 |            2012 |                  1 |
+|            70 |            2012 |                  1 |
+|           110 |            2012 |                  2 |
++---------------+-----------------+--------------------+
+33 rows in set (0.00 sec)
+
+/*
+11. Display the count of employees joined in each month of the year 2017.
+*/
+mysql> SELECT COUNT(EMPLOYEE_ID),monthname(HIRE_DATE)
+    -> FROM employees
+    -> GROUP BY monthname(HIRE_DATE);
++--------------------+----------------------+
+| COUNT(EMPLOYEE_ID) | monthname(HIRE_DATE) |
++--------------------+----------------------+
+|                 11 | June                 |
+|                  5 | September            |
+|                 14 | January              |
+|                  6 | May                  |
+|                 13 | February             |
+|                  9 | August               |
+|                 17 | March                |
+|                  7 | December             |
+|                  7 | July                 |
+|                  5 | November             |
+|                  7 | April                |
+|                  6 | October              |
++--------------------+----------------------+
+12 rows in set (0.00 sec)
+
+/*
+12. Display the details of departments in which the maximum salary is more
+than 10000.
+*/
+
+mysql> SELECT DEPARTMENT_ID,MAX(Salary)
+    -> FROM employees
+    -> GROUP BY DEPARTMENT_ID
+    -> HAVING MAX(Salary)>10000;
++---------------+-------------+
+| DEPARTMENT_ID | MAX(Salary) |
++---------------+-------------+
+|            20 |    13000.00 |
+|            30 |    11000.00 |
+|            80 |    14000.00 |
+|            90 |    24000.00 |
+|           100 |    12008.00 |
+|           110 |    12008.00 |
++---------------+-------------+
+6 rows in set (0.00 sec)

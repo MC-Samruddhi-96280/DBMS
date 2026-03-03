@@ -1,0 +1,191 @@
+
+/*
+Use appropriate joins to solve following queries.
+Note: To solve below queries, use “sales” database
+
+1. Write a query that lists each order number followed by the name of the
+customer who made the order.
+*/
+
+mysql> SELECT o.onum,c.cname
+    -> FROM orders o
+    -> INNER JOIN customers c
+    -> ON o.snum=c.snum;
++------+----------+
+| onum | cname    |
++------+----------+
+| 3001 | Cisneros |
+| 3003 | Clemens  |
+| 3003 | Hoffman  |
+| 3002 | Pereira  |
+| 3005 | Grass    |
+| 3005 | Liu      |
+| 3006 | Cisneros |
+| 3009 | Giovanni |
+| 3007 | Grass    |
+| 3007 | Liu      |
+| 3008 | Clemens  |
+| 3008 | Hoffman  |
+| 3010 | Grass    |
+| 3010 | Liu      |
+| 3011 | Clemens  |
+| 3011 | Hoffman  |
++------+----------+
+16 rows in set (0.00 sec)
+
+/*
+2. Write a query that gives the names of both the salesperson and the
+customer for each order along with the order number.
+*/
+
+mysql> DESC customers
+    -> ;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| cnum   | int         | YES  |     | NULL    |       |
+| cname  | varchar(10) | YES  |     | NULL    |       |
+| city   | varchar(10) | YES  |     | NULL    |       |
+| rating | int         | YES  |     | NULL    |       |
+| snum   | int         | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> DESC ORDERS;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| onum  | int          | YES  |     | NULL    |       |
+| amt   | decimal(7,2) | YES  |     | NULL    |       |
+| odate | date         | YES  |     | NULL    |       |
+| cnum  | int          | YES  |     | NULL    |       |
+| snum  | int          | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc salespeople;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| snum  | int          | YES  |     | NULL    |       |
+| sname | varchar(10)  | YES  |     | NULL    |       |
+| city  | varchar(10)  | YES  |     | NULL    |       |
+| comm  | decimal(3,2) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+snum
+
+mysql> SELECT o.onum,c.cname,s.sname
+    -> FROM ORDERS o
+    -> INNER JOIN CUSTOMERS c
+    -> ON o.snum=c.snum
+    -> INNER JOIN salespeople s
+    -> ON o.snum = s.snum;
++------+----------+---------+
+| onum | cname    | sname   |
++------+----------+---------+
+| 3001 | Cisneros | Rifkin  |
+| 3003 | Clemens  | Peel    |
+| 3003 | Hoffman  | Peel    |
+| 3002 | Pereira  | Motika  |
+| 3005 | Grass    | Serres  |
+| 3005 | Liu      | Serres  |
+| 3006 | Cisneros | Rifkin  |
+| 3009 | Giovanni | Axelrod |
+| 3007 | Grass    | Serres  |
+| 3007 | Liu      | Serres  |
+| 3008 | Clemens  | Peel    |
+| 3008 | Hoffman  | Peel    |
+| 3010 | Grass    | Serres  |
+| 3010 | Liu      | Serres  |
+| 3011 | Clemens  | Peel    |
+| 3011 | Hoffman  | Peel    |
++------+----------+---------+
+16 rows in set (0.00 sec)
+
+/*
+3. Write a query that produces all customers serviced by salespeople with a
+commission above 12%. Display the customer’s name, the salesperson’s 
+name, and the salesperson’s rate of commission.
+*/
+
+SELECT c.cname,s.sname,s.comm
+FROM  customers c
+INNER JOIN 
+salespeople s
+ON c.snum= s.snum
+WHERE s.comm >0.12 ;
+
+mysql> SELECT c.cname,s.sname,s.comm
+    -> FROM  customers c
+    -> INNER JOIN
+    -> salespeople s
+    -> ON c.snum= s.snum
+    -> WHERE s.comm >0.12 ;
++----------+--------+------+
+| cname    | sname  | comm |
++----------+--------+------+
+| Liu      | Serres | 0.13 |
+| Grass    | Serres | 0.13 |
+| Cisneros | Rifkin | 0.15 |
++----------+--------+------+
+3 rows in set (0.03 sec)
+
+
+/*
+4. Write a query that calculates the commission earned by each 
+salesperson for orders placed by customers with a rating above 100.
+*/
+
+mysql> SELECT o.onum,s.comm,s.comm *o.amt
+    -> FROM orders o
+    -> INNER JOIN salespeople s
+    -> ON s.snum=o.snum
+    -> INNER JOIN customers c
+    -> ON o.cnum =c.cnum
+    -> WHERE rating >100;
++------+------+---------------+
+| onum | comm | s.comm *o.amt |
++------+------+---------------+
+| 3010 | 0.13 |       40.2935 |
+| 3007 | 0.13 |        9.8475 |
+| 3005 | 0.13 |      670.8585 |
+| 3006 | 0.15 |      164.7240 |
+| 3001 | 0.15 |        2.8035 |
+| 3009 | 0.10 |      171.3230 |
++------+------+---------------+
+6 rows in set (0.00 sec)
+
+
+/*
+5. Write a query that produces all pairs of salespeople who are living in 
+the same city. Exclude combinations of salespeople with themselves as
+well as duplicate rows with the order reversed.
+
+*/
+mysql> SELECT s.sname AS salesperson1, s1.sname AS salesperson2, s.city
+    -> FROM salespeople S
+    -> INNER JOIN salespeople S1
+    -> ON s.city=s1.city
+    -> WHERE s.snum <s1.snum;
++--------------+--------------+--------+
+| salesperson1 | salesperson2 | city   |
++--------------+--------------+--------+
+| Peel         | Motika       | London |
++--------------+--------------+--------+
+1 row in set (0.05 sec)
+
+
+
+
+
+mysql> desc salespeople;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| snum  | int          | YES  |     | NULL    |       |
+| sname | varchar(10)  | YES  |     | NULL    |       |
+| city  | varchar(10)  | YES  |     | NULL    |       |
+| comm  | decimal(3,2) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
