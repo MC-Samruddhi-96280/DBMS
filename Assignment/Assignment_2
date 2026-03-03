@@ -1,0 +1,359 @@
+C:\Users\jadha>mysql -u root -pmanager
+
+mysql> CREATE DATABASE new_hr_db;
+Query OK, 1 row affected (0.08 sec)
+
+mysql> USE new_hr_db;
+Database changed
+
+
+mysql> SOURCE E:\C-MC\DBMS\new-hr-db.sql
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL PRIVILEGES ON new_hr_db.* TO sunbeam;
+Query OK, 0 rows affected (0.11 sec)
+
+------------------------------------------------------------------
+
+
+C:\Users\jadha>mysql -u root -pmanager
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 24
+Server version: 8.4.8 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| classwork_db       |
+| information_schema |
+| mysql              |
+| new_hr_db          |
+| performance_schema |
+| sales_db           |
+| spj                |
+| sys                |
++--------------------+
+8 rows in set (0.01 sec)
+
+mysql> USE sales_db;
+Database changed
+mysql> SHOW TABLES;
++--------------------+
+| Tables_in_sales_db |
++--------------------+
+| customers          |
+| orders             |
+| salespeople        |
++--------------------+
+3 rows in set (0.01 sec)
+
+mysql> DESC customers
+    -> ;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| cnum   | int         | YES  |     | NULL    |       |
+| cname  | varchar(10) | YES  |     | NULL    |       |
+| city   | varchar(10) | YES  |     | NULL    |       |
+| rating | int         | YES  |     | NULL    |       |
+| snum   | int         | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT * FROM customers;
++------+----------+----------+--------+------+
+| cnum | cname    | city     | rating | snum |
++------+----------+----------+--------+------+
+| 2001 | Hoffman  | London   |    100 | 1001 |
+| 2002 | Giovanni | Rome     |    200 | 1003 |
+| 2003 | Liu      | San Jose |    200 | 1002 |
+| 2004 | Grass    | Berlin   |    300 | 1002 |
+| 2006 | Clemens  | London   |    100 | 1001 |
+| 2008 | Cisneros | San Jose |    300 | 1007 |
+| 2007 | Pereira  | Rome     |    100 | 1004 |
++------+----------+----------+--------+------+
+7 rows in set (0.00 sec)
+
+
+
+/*
+1.  Write a query that produces all rows from the Customers table 
+for which the salesperson’s number is 1001. 
+*/
+
+mysql> SELECT *
+    -> FROM customers
+    -> WHERE snum = 1001;
++------+---------+--------+--------+------+
+| cnum | cname   | city   | rating | snum |
++------+---------+--------+--------+------+
+| 2001 | Hoffman | London |    100 | 1001 |
+| 2006 | Clemens | London |    100 | 1001 |
++------+---------+--------+--------+------+
+2 rows in set (0.05 sec)
+
+/*
+2. Write a select command that produces the rating followed by 
+the name of each customer in San Jose.
+*/
+
+mysql> SELECT cname,rating
+    -> FROM customers
+    -> where city = 'san Jose'
+    -> ;
++----------+--------+
+| cname    | rating |
++----------+--------+
+| Liu      |    200 |
+| Cisneros |    300 |
++----------+--------+
+2 rows in set (0.00 sec)
+
+/* 
+3.  Write a query that will produce the snum values of all 
+salespeople from the Orders table (with the duplicate values 
+suppressed).
+*/
+
+
+mysql> select * FROM orders;
++------+---------+------------+------+------+
+| onum | amt     | odate      | cnum | snum |
++------+---------+------------+------+------+
+| 3001 |   18.69 | 1990-10-03 | 2008 | 1007 |
+| 3003 |  767.19 | 1990-10-03 | 2001 | 1001 |
+| 3002 | 1900.10 | 1990-10-03 | 2007 | 1004 |
+| 3005 | 5160.45 | 1990-10-03 | 2003 | 1002 |
+| 3006 | 1098.16 | 1990-10-03 | 2008 | 1007 |
+| 3009 | 1713.23 | 1990-10-04 | 2002 | 1003 |
+| 3007 |   75.75 | 1990-10-04 | 2004 | 1002 |
+| 3008 | 4723.00 | 1990-10-04 | 2006 | 1001 |
+| 3010 |  309.95 | 1990-10-04 | 2004 | 1002 |
+| 3011 | 9891.88 | 1990-10-04 | 2006 | 1001 |
++------+---------+------------+------+------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT distinct snum
+    -> FROM orders;
++------+
+| snum |
++------+
+| 1007 |
+| 1001 |
+| 1004 |
+| 1002 |
+| 1003 |
++------+
+5 rows in set (0.11 sec)
+
+
+/*
+4.  Write a query that will display all the orders for amount 
+more than Rs. 1,000.
+*/
+
+mysql> SELECT *
+    -> FROM orders
+    -> WHERE amt >1000;
++------+---------+------------+------+------+
+| onum | amt     | odate      | cnum | snum |
++------+---------+------------+------+------+
+| 3002 | 1900.10 | 1990-10-03 | 2007 | 1004 |
+| 3005 | 5160.45 | 1990-10-03 | 2003 | 1002 |
+| 3006 | 1098.16 | 1990-10-03 | 2008 | 1007 |
+| 3009 | 1713.23 | 1990-10-04 | 2002 | 1003 |
+| 3008 | 4723.00 | 1990-10-04 | 2006 | 1001 |
+| 3011 | 9891.88 | 1990-10-04 | 2006 | 1001 |
++------+---------+------------+------+------+
+6 rows in set (0.10 sec)
+
+/*
+5.  Write a query that will give you the names and cities of all 
+salespeople in London with a commission above 0.10.
+*/
+mysql> SELECT * FROM salespeople;
++------+---------+-----------+------+
+| snum | sname   | city      | comm |
++------+---------+-----------+------+
+| 1001 | Peel    | London    | 0.12 |
+| 1002 | Serres  | San Jose  | 0.13 |
+| 1004 | Motika  | London    | 0.11 |
+| 1007 | Rifkin  | Barcelona | 0.15 |
+| 1003 | Axelrod | New York  | 0.10 |
++------+---------+-----------+------+
+5 rows in set (0.01 sec)
+
+
+mysql> SELECT sname,city
+    -> FROM salespeople
+    -> WHERE city = 'London'
+    -> AND
+    ->  comm >0.10;
++--------+--------+
+| sname  | city   |
++--------+--------+
+| Peel   | London |
+| Motika | London |
++--------+--------+
+2 rows in set (0.01 sec)
+
+/*
+6. Write an SQL query that returns all customers who have a 
+rating greater than 100, along with the customers located in 
+Rome regardless of their rating. 
+*/
+mysql> SELECT * FROM customers;
++------+----------+----------+--------+------+
+| cnum | cname    | city     | rating | snum |
++------+----------+----------+--------+------+
+| 2001 | Hoffman  | London   |    100 | 1001 |
+| 2002 | Giovanni | Rome     |    200 | 1003 |
+| 2003 | Liu      | San Jose |    200 | 1002 |
+| 2004 | Grass    | Berlin   |    300 | 1002 |
+| 2006 | Clemens  | London   |    100 | 1001 |
+| 2008 | Cisneros | San Jose |    300 | 1007 |
+| 2007 | Pereira  | Rome     |    100 | 1004 |
++------+----------+----------+--------+------+
+7 rows in set (0.01 sec)
+
+
+mysql> SELECT *
+    -> FROM customers
+    -> WHERE rating >100
+    -> OR
+    -> city ='Rome';
++------+----------+----------+--------+------+
+| cnum | cname    | city     | rating | snum |
++------+----------+----------+--------+------+
+| 2002 | Giovanni | Rome     |    200 | 1003 |
+| 2003 | Liu      | San Jose |    200 | 1002 |
+| 2004 | Grass    | Berlin   |    300 | 1002 |
+| 2008 | Cisneros | San Jose |    300 | 1007 |
+| 2007 | Pereira  | Rome     |    100 | 1004 |
++------+----------+----------+--------+------+
+5 rows in set (0.00 sec)
+
+
+/*
+7. What will be the output from the following query? 
+Select * from orders where (amt < 1000 OR NOT (odate = ‘1990-10- 
+03’ AND cnum > 2003))
+*/
+
+
+mysql> Select * from orders where (amt < 1000 OR NOT (odate = ‘1990-10-
+    -> 03’ AND cnum > 2003));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?1990-10-
+03? AND cnum > 2003))' at line 1
+
+/*[‘1990-10-03’ → wrong quotes
+
+1990-10- and 03 are split into two lines]*/
+----------------------------
+
+mysql> SELECT *
+    -> FROM orders
+    -> WHERE (amt < 1000
+    ->        OR NOT (odate = '1990-10-03' AND cnum > 2003));
++------+---------+------------+------+------+
+| onum | amt     | odate      | cnum | snum |
++------+---------+------------+------+------+
+| 3001 |   18.69 | 1990-10-03 | 2008 | 1007 |
+| 3003 |  767.19 | 1990-10-03 | 2001 | 1001 |
+| 3005 | 5160.45 | 1990-10-03 | 2003 | 1002 |
+| 3009 | 1713.23 | 1990-10-04 | 2002 | 1003 |
+| 3007 |   75.75 | 1990-10-04 | 2004 | 1002 |
+| 3008 | 4723.00 | 1990-10-04 | 2006 | 1001 |
+| 3010 |  309.95 | 1990-10-04 | 2004 | 1002 |
+| 3011 | 9891.88 | 1990-10-04 | 2006 | 1001 |
++------+---------+------------+------+------+
+8 rows in set (0.02 sec)
+
+
+/*
+8.  What will be the output of the following query? 
+
+Select * from Orders where NOT (odate = ‘1990-10-03’ OR snum 
+>1006) AND amt >= 1500; 
+*/
+
+SELECT *
+FROM orders
+WHERE NOT (odate = '1990-10-03' OR snum >1006) 
+AND amt >= 1500;
+
+mysql> SELECT *
+    -> FROM orders
+    -> WHERE NOT (odate = ‘1990-10-03’ OR snum >1006)
+    -> AND amt >= 1500;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?1990-10-03? OR snum >1006)
+AND amt >= 1500' at line 3
+mysql>
+/* wrong quotation marks around the date */
+wrong quotation marks around the date */
+
+mysql> SELECT *
+    -> FROM orders
+    -> WHERE NOT (odate = '1990-10-03' OR snum >1006)
+    -> AND amt >= 1500;
++------+---------+------------+------+------+
+| onum | amt     | odate      | cnum | snum |
++------+---------+------------+------+------+
+| 3009 | 1713.23 | 1990-10-04 | 2002 | 1003 |
+| 3008 | 4723.00 | 1990-10-04 | 2006 | 1001 |
+| 3011 | 9891.88 | 1990-10-04 | 2006 | 1001 |
++------+---------+------------+------+------+
+3 rows in set (0.00 sec)
+
+/*
+9.  What is a simpler way to write this query? 
+Select snum, sname, city, comm from Salespeople 
+Where (comm >= .12 AND comm <= .14); 
+*/
+
+mysql> Select snum, sname, city, comm from Salespeople
+    -> Where (comm >= .12 AND comm <= .14);
++------+--------+----------+------+
+| snum | sname  | city     | comm |
++------+--------+----------+------+
+| 1001 | Peel   | London   | 0.12 |
+| 1002 | Serres | San Jose | 0.13 |
++------+--------+----------+------+
+2 rows in set (0.00 sec)
+
+
+/*
+10.  Write a query that selects all orders except those with 
+amount less than 100. 
+*/
+
+mysql> SELECT *
+    -> FROM orders
+    -> WHERE amt >= 100;
++------+---------+------------+------+------+
+| onum | amt     | odate      | cnum | snum |
++------+---------+------------+------+------+
+| 3003 |  767.19 | 1990-10-03 | 2001 | 1001 |
+| 3002 | 1900.10 | 1990-10-03 | 2007 | 1004 |
+| 3005 | 5160.45 | 1990-10-03 | 2003 | 1002 |
+| 3006 | 1098.16 | 1990-10-03 | 2008 | 1007 |
+| 3009 | 1713.23 | 1990-10-04 | 2002 | 1003 |
+| 3008 | 4723.00 | 1990-10-04 | 2006 | 1001 |
+| 3010 |  309.95 | 1990-10-04 | 2004 | 1002 |
+| 3011 | 9891.88 | 1990-10-04 | 2006 | 1001 |
++------+---------+------------+------+------+
+8 rows in set (0.00 sec)
